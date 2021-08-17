@@ -1,0 +1,82 @@
+---
+title: "Joins"
+author: "Felicia Cruz"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(palmerpenguins)
+```
+
+### Warm up task
+```{r}
+penguin_subset <- penguins %>% 
+  filter(island == "Biscoe" | island == "Dream") %>% 
+  select(-year, -sex) %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  rename(location = island)
+
+penguin_adelie <- penguins %>%
+  filter(species == "Adelie") %>%
+  filter(!is.na(flipper_length_mm)) %>% 
+  group_by(sex) %>% 
+  summarize(mean_flipper = mean(flipper_length_mm),
+            sd_flipper= sd(flipper_length_mm),
+            sample_size = n())
+```
+
+## Joins practice 
+
+```{r}
+animals <- tibble::tribble(
+  ~location,   ~species,  ~maturity,
+   "lagoon",   "bobcat",    "adult",
+    "bluff",   "coyote", "juvenile",
+    "creek",      "fox",    "adult",
+     "oaks", "squirrel", "juvenile",
+    "bluff",   "bobcat",    "adult"
+  )
+
+sites <- tibble::tribble(
+  ~location,      ~full_site_name, ~jurisdiction,
+    "beach",       "Goleta Beach",     "SB City",
+   "lagoon",        "UCSB Lagoon",        "UCSB",
+    "bluff",       "Ellwood Mesa",     "SB City",
+     "oaks", "Fremont Campground",        "USFS"
+  )
+
+```
+
+### Full join 
+```{r}
+animals_full_join <- full_join(animals, sites)
+```
+### Left join
+```{r}
+animals_left_join <- left_join(animals, sites, by = "location")
+```
+
+### Inner join 
+```{r}
+animals_inner_join <- inner_join(animals, sites)
+```
+
+These are all mutating joins. We end up with more columns than we started with. 
+
+## Filtering joins 
+Will not increase the number of columns in the resulting data frame.
+
+### Semi join
+```{r}
+animals_semi_join <- semi_join(animals, sites, by = "location")
+```
+
+### Anti-join
+```{r}
+animals_anti_join <- anti_join(sites, animals, by = "location")
+```
+
+
