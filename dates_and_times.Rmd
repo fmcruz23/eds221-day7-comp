@@ -1,0 +1,93 @@
+---
+title: "Working with dates and times"
+author: "Felicia Cruz"
+date: "8/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+```
+
+## Play around with functions in `lubridate`
+
+```{r}
+my_date <- "03-15-1998"
+class(my_date)
+
+
+```
+
+```{r}
+my_date_new <- lubridate::mdy(my_date)
+class(my_date_new)
+```
+
+## Try converting the following to dates 
+- 4/6/2005
+- 20100806
+- 12-Jun-1974
+- 2/5/1999
+```{r}
+mdy("4/6/2005")
+ymd("20100806")
+dmy("12-Jun-1974")
+mdy("2/5/1999")
+
+date_vector <- c("02-05-1999", "03/06/2000")
+date_vector <- mdy(date_vector)
+
+class(date_vector)
+```
+
+```{r}
+time <- "2020-08-12 11:18"
+
+ex_5 <- ymd_hm(time)
+ex_5
+class(ex_5)
+
+
+time_la <- with_tz(ex_5, "America/Los_Angeles")
+
+# Create a date time
+# Convert it to the time in Sydney, Australia 
+
+ex_6 <- ("4/12/2021 5:15")
+time_sydney <- with_tz(ex_5, "Australia/Sydney")
+
+```
+
+```{r}
+lubridate::week(time_sydney) # gives week of the year 
+day(time_sydney)
+minute(time_sydney)
+
+
+```
+```{r}
+my_bday <- ymd("1999/02/05")
+
+wday(my_bday, label = TRUE)
+```
+
+
+```{r}
+urchin_counts <- tribble(
+  ~date, ~species, ~size_mm,
+  "10/3/2020", "purple", 55,
+  "10/4/2020", "red", 48,
+  "11/17/2020", "red", 67
+)
+
+urchin_counts_ymd <- urchin_counts %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date),
+         month = month(date))
+```
+
+
+
+
